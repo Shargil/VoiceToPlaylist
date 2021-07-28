@@ -64,7 +64,8 @@ def loading_audio_data():
                 y.append(emotion)
             except:
                 print("This file wasn't process because of an error: " + file)
-
+                
+    # Split the dateset, most for training it, and some for testing it accuracy  
     final_dataset = train_test_split(np.array(x), y, test_size=0.1, random_state=9)
     return final_dataset
 
@@ -79,15 +80,17 @@ def record_sound():
     print("Recoreding in 1")
     time.sleep(1) 
     
+    # Record and save
     my_recording = sd.rec(int(seconds * fs), samplerate=fs, channels=1)
     print("Recoreding: Started")
-    sd.wait()  # Wait until recording is finished
+    sd.wait()
     print("Recoreding: Stopped")
-    write('output.wav', fs, my_recording)  # Save as WAV file 
+    write('output.wav', fs, my_recording)
+
     return glob.glob("output.wav")[0]
 
 def get_playlist(mood):
-    # Sign up to rapidAPI, subscribe to this end point, and obtain your headers (x-rapidapi-keyno)
+    # Sign up to rapidAPI, subscribe to this end point, and obtain your headers (x-rapidapi-key)
     # https://rapidapi.com/shekhar1000.sc/api/unsa-unofficial-spotify-api/
 
     url = "https://unsa-unofficial-spotify-api.p.rapidapi.com/search"
@@ -101,7 +104,9 @@ def get_playlist(mood):
 
     response = requests.request("GET", url, headers=headers, params=querystring)
 
-    return response.json()["Results"][random.randint(0,9)]["id"]
+    playlist_id = response.json()["Results"][random.randint(0,9)]["id"]
+
+    return playlist_id
 
 def open_playlist_in_browser(playlist_id):
     webbrowser.open('https://open.spotify.com/playlist/' + str(playlist_id))
@@ -135,10 +140,10 @@ def recognize_your_mood(model):
             return mood_prediction
 
 def main():
-    # Training modal (can save the result)
+    # Training modal (TODO: should probably save the result and not run every time)
     model, accuracy = train_model()
 
-    while True:
+    if accuracy > 75:
         mood = recognize_your_mood(model)
         playlist_id = get_playlist(mood)
         open_playlist_in_browser(playlist_id)
@@ -146,5 +151,5 @@ def main():
 if __name__ == "__main__":
     main()
 
-# Dataset: RAVDESS - 60 audio clips of each actor X 24 actors = 1440
-# Supervised Learning: we give the modal some data to train on (learn the patters to alow it to classify), and some data to test on (try to classify, then compare to the actual label and learn from it's mistakes)
+# ----- Some Info -----
+# Dataset: RAVDESS - 60 audio clips of each actor X 24 actors = 1440 audio clips
