@@ -7,6 +7,7 @@
 
 P.S No idea if it works better then random :)
 
+## Screen Shots
 ![Img1](/assets/readme_img_1.PNG?raw=true "Terminal Screen Shot") 
 ![Img2](/assets/readme_img_2.PNG?raw=true "Happy Playlist") 
 
