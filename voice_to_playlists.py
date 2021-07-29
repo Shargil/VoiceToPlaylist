@@ -143,7 +143,7 @@ def main():
     # Training modal (TODO: should probably save the result and not run every time)
     model, accuracy = train_model()
 
-    if accuracy > 75:
+    if accuracy > 60:
         mood = recognize_your_mood(model)
         playlist_id = get_playlist(mood)
         open_playlist_in_browser(playlist_id)
